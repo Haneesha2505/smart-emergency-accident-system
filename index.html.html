@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emergency Response Portal | Smart Accident Detection</title>
+<style>
+:root{--navy:#142b45;--navy2:#1d3b5b;--red:#c62828;--redbg:#fff0f0;--green:#13795b;--greenbg:#e8f7ef;--amber:#9a6700;--amberbg:#fff6df;--bg:#f3f6fa;--text:#172b3a;--muted:#627386;--border:#dce4ed;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);font-family:Inter,Segoe UI,Arial,sans-serif;color:var(--text)}
+header{background:linear-gradient(120deg,var(--navy),var(--navy2));color:white;padding:22px clamp(16px,4vw,44px);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{display:flex;gap:13px;align-items:center}.logo{width:48px;height:48px;border-radius:13px;background:#ffffff18;display:grid;place-items:center;font-size:26px}.brand h1{font-size:clamp(18px,2.4vw,25px);margin:0 0 5px}.brand p{margin:0;color:#c8d7e6;font-size:13px}
+.demo-pill{border:1px solid #ffb4b4;background:#64252b;color:#fff1f1;padding:8px 12px;border-radius:999px;font-weight:800;font-size:12px;letter-spacing:.5px}
+main{max-width:1200px;margin:26px auto;padding:0 18px 36px}.notice{background:#fff8e8;border:1px solid #f2d28a;color:#75500b;padding:12px 15px;border-radius:12px;font-size:13px;line-height:1.5;margin-bottom:20px}
+.topline{display:flex;justify-content:space-between;align-items:end;gap:12px;flex-wrap:wrap;margin-bottom:17px}.topline h2{margin:0;font-size:22px}.topline p{margin:5px 0 0;color:var(--muted);font-size:13px}
+button{font:inherit;cursor:pointer;border:0;border-radius:10px;padding:11px 15px;font-weight:750;transition:transform .08s,opacity .15s}button:active{transform:scale(.98)}button:focus-visible{outline:3px solid #8bb8ff;outline-offset:2px}.primary{background:var(--red);color:white}.darkbtn{background:var(--navy);color:white}.secondary{background:white;color:var(--navy);border:1px solid var(--border)}.successbtn{background:var(--green);color:white}.small{padding:8px 11px;font-size:13px}
+.grid{display:grid;grid-template-columns:1.3fr .9fr;gap:18px}.card{background:var(--white);border:1px solid var(--border);border-radius:16px;box-shadow:0 5px 20px #19334d08;overflow:hidden}.cardhead{padding:17px 19px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;gap:10px}.cardhead h3{font-size:15px;margin:0}.cardbody{padding:19px}
+.statusbadge{font-size:11px;font-weight:800;letter-spacing:.35px;border-radius:999px;padding:7px 10px;background:var(--amberbg);color:var(--amber)}.statusbadge.red{background:var(--redbg);color:var(--red)}.statusbadge.green{background:var(--greenbg);color:var(--green)}
+.alert-banner{display:flex;align-items:flex-start;gap:12px;background:var(--redbg);border:1px solid #f4caca;padding:15px;border-radius:12px;margin-bottom:17px}.alert-icon{font-size:25px}.alert-banner h4{margin:1px 0 5px;font-size:17px}.alert-banner p{margin:0;color:#7e3030;font-size:13px;line-height:1.5}
+.metrics{display:grid;grid-template-columns:1fr 1fr;gap:11px}.metric{border:1px solid var(--border);border-radius:11px;padding:13px}.metric .label{font-size:12px;color:var(--muted);margin-bottom:7px}.metric .value{font-size:15px;font-weight:800;overflow-wrap:anywhere}.metric .sub{font-size:11px;color:var(--muted);margin-top:5px}
+.sectionlabel{font-size:12px;color:var(--muted);font-weight:800;letter-spacing:.5px;text-transform:uppercase;margin:20px 0 10px}.mapbox{height:235px;border:1px solid var(--border);border-radius:12px;overflow:hidden;background:#e8f0e7;position:relative}.mapbox iframe{width:100%;height:100%;border:0}.mapfallback{height:100%;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:20px;color:#3b5d48;background:linear-gradient(35deg,#e7f1e7,#f2f5e8)}.mapfallback .pin{font-size:32px}.mapfallback p{max-width:320px;font-size:13px;line-height:1.5}
+.actions{display:flex;flex-wrap:wrap;gap:9px;margin-top:17px}.actions button{flex:1;min-width:130px}.side-stack{display:flex;flex-direction:column;gap:18px}.timeline{display:flex;flex-direction:column;gap:15px}.event{display:flex;gap:11px;font-size:13px;line-height:1.45}.dot{width:10px;height:10px;border-radius:50%;background:#a8b7c7;margin-top:4px;flex-shrink:0}.dot.active{background:var(--red);box-shadow:0 0 0 4px #ffe4e4}.event strong{display:block;margin-bottom:2px}.event span{color:var(--muted)}
+.message{background:#f7f9fc;border:1px solid var(--border);border-radius:11px;padding:14px;font-size:13px;line-height:1.6;white-space:pre-wrap;overflow-wrap:anywhere}.foot{font-size:12px;color:var(--muted);text-align:center;margin-top:22px;line-height:1.6}
+.toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:#142b45;color:white;padding:12px 16px;border-radius:10px;box-shadow:0 8px 24px #0002;display:none;max-width:calc(100vw - 30px);font-size:13px;z-index:10}
+@media(max-width:820px){.grid{grid-template-columns:1fr}.mapbox{height:220px}}@media(max-width:480px){.metrics{grid-template-columns:1fr 1fr}.metric{padding:10px}.metric .value{font-size:13px}.cardbody{padding:14px}.actions button{min-width:100%}}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><div class="logo">🛡️</div><div><h1>Emergency Response Portal</h1><p>Smart Emergency Accident Detection System</p></div></div>
+  <div class="demo-pill">● DEMONSTRATION MODE</div>
+</header>
+<main>
+  <div class="notice"><strong>Prototype notice:</strong> This dashboard uses sample accident information for a college project demonstration. It is not connected to 108 or any emergency service, and no real alert is sent.</div>
+  <div class="topline">
+    <div><h2>Incident Monitoring</h2><p>Review a simulated alert as an emergency responder might.</p></div>
+    <button class="primary" id="simulateBtn">⚠ Simulate Accident Alert</button>
+  </div>
+  <div class="grid">
+    <section class="card">
+      <div class="cardhead"><h3>Incident details</h3><span id="statusBadge" class="statusbadge red">AWAITING RESPONSE</span></div>
+      <div class="cardbody">
+        <div class="alert-banner"><div class="alert-icon">🚨</div><div><h4 id="alertTitle">Possible vehicle accident detected</h4><p id="alertDesc">A simulated alert has been received. Please review the sample location and acknowledge this demo incident.</p></div></div>
+        <div class="metrics">
+          <div class="metric"><div class="label">Incident ID</div><div class="value" id="incidentId">DEMO-001</div><div class="sub">Demo reference only</div></div>
+          <div class="metric"><div class="label">Alert received</div><div class="value" id="receivedAt">10:42:15 AM</div><div class="sub">Local demonstration time</div></div>
+          <div class="metric"><div class="label">Vehicle ID</div><div class="value">VEHICLE-001</div><div class="sub">Sample vehicle</div></div>
+          <div class="metric"><div class="label">Detection source</div><div class="value">Impact sensor (simulated)</div><div class="sub">Hardware not connected</div></div>
+          <div class="metric"><div class="label">Latitude</div><div class="value" id="lat">16.5062° N</div><div class="sub">Sample coordinates</div></div>
+          <div class="metric"><div class="label">Longitude</div><div class="value" id="lon">80.6480° E</div><div class="sub">Sample coordinates</div></div>
+        </div>
+        <div class="sectionlabel">Incident location</div>
+        <div class="mapbox" id="mapbox">
+          <div class="mapfallback"><div class="pin">📍</div><strong>Sample incident location</strong><p>Vijayawada sample coordinates: 16.5062, 80.6480. Use “View on Google Maps” to open the map.</p></div>
+        </div>
+        <div class="actions">
+          <button class="successbtn" id="ackBtn">✓ Acknowledge Alert</button>
+          <button class="secondary" id="mapBtn">↗ View on Google Maps</button>
+        </div>
+      </div>
+    </section>
+    <aside class="side-stack">
+      <section class="card">
+        <div class="cardhead"><h3>Response activity</h3><span class="statusbadge">LIVE DEMO</span></div>
+        <div class="cardbody"><div class="timeline" id="timeline">
+          <div class="event"><div class="dot active"></div><div><strong>Alert awaiting review</strong><span>Simulated incident is displayed on this dashboard.</span></div></div>
+          <div class="event"><div class="dot"></div><div><strong>Responder acknowledgement</strong><span>Click “Acknowledge Alert” to demonstrate this step.</span></div></div>
+          <div class="event"><div class="dot"></div><div><strong>Location review</strong><span>Open the sample coordinates in Google Maps.</span></div></div>
+        </div></div>
+      </section>
+      <section class="card">
+        <div class="cardhead"><h3>Emergency message preview</h3><span class="statusbadge">SAMPLE</span></div>
+        <div class="cardbody">
+          <div class="message" id="message">DEMO ALERT: Possible vehicle accident detected.
+Incident ID: DEMO-001
+Location: 16.5062, 80.6480
+Map: https://maps.google.com/?q=16.5062,80.6480
+Status: Awaiting response
+
+This is sample text only. No message has been sent.</div>
+          <div class="actions"><button class="darkbtn" id="copyBtn">Copy message text</button><button class="secondary" id="resetBtn">Reset demo</button></div>
+        </div>
+      </section>
+    </aside>
+  </div>
+  <div class="foot">Academic prototype • Sample data only • No connection to 108, ambulance services, SMS gateways, or real vehicle hardware.</div>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script>
+const $=id=>document.getElementById(id);
+let count=1, acknowledged=false;
+function toast(msg){const t=$('toast');t.textContent=msg;t.style.display='block';clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.style.display='none',3000)}
+function updateMessage(){
+ const lat=$('lat').textContent.replace(/[° N]/g,'').trim();
+ const lon=$('lon').textContent.replace(/[° E]/g,'').trim();
+ $('message').textContent=`DEMO ALERT: Possible vehicle accident detected.\nIncident ID: ${$('incidentId').textContent}\nLocation: ${lat}, ${lon}\nMap: https://maps.google.com/?q=${lat},${lon}\nStatus: ${acknowledged?'Acknowledged (demo)': 'Awaiting response'}\n\nThis is sample text only. No message has been sent.`;
+}
+function updateTimeline(){
+ $('timeline').innerHTML=`<div class="event"><div class="dot active"></div><div><strong>Alert received (simulated)</strong><span>${$('receivedAt').textContent}</span></div></div><div class="event"><div class="dot ${acknowledged?'active':''}"></div><div><strong>${acknowledged?'Alert acknowledged':'Responder acknowledgement'}</strong><span>${acknowledged?'Demo responder marked this alert as acknowledged.':'Click “Acknowledge Alert” to demonstrate this step.'}</span></div></div><div class="event"><div class="dot"></div><div><strong>Location review</strong><span>Open the sample coordinates in Google Maps.</span></div></div>`;
+}
+$('simulateBtn').addEventListener('click',()=>{
+ count++; acknowledged=false;
+ const now=new Date();
+ $('incidentId').textContent='DEMO-'+String(count).padStart(3,'0');
+ $('receivedAt').textContent=now.toLocaleTimeString();
+ $('statusBadge').textContent='AWAITING RESPONSE';$('statusBadge').className='statusbadge red';
+ $('alertTitle').textContent='Possible vehicle accident detected';
+ $('alertDesc').textContent='A new simulated alert has been received. Review the sample location and acknowledge this demo incident.';
+ $('lat').textContent='16.5062° N';$('lon').textContent='80.6480° E';
+ $('mapbox').innerHTML='<div class="mapfallback"><div class="pin">📍</div><strong>Sample incident location</strong><p>Vijayawada sample coordinates: 16.5062, 80.6480. Use “View on Google Maps” to open the map.</p></div>';
+ updateMessage();updateTimeline();toast('Demo accident alert created. No real emergency service was contacted.');
+});
+$('ackBtn').addEventListener('click',()=>{
+ acknowledged=true;$('statusBadge').textContent='ACKNOWLEDGED';$('statusBadge').className='statusbadge green';
+ $('alertTitle').textContent='Alert acknowledged (demo)';$('alertDesc').textContent='The responder has acknowledged this simulated incident. No dispatch request has been sent.';
+ updateMessage();updateTimeline();toast('Alert acknowledged in the demo.');
+});
+$('mapBtn').addEventListener('click',()=>{
+ const lat='16.5062',lon='80.6480';
+ window.open(`https://www.google.com/maps?q=${lat},${lon}`,'_blank','noopener');
+});
+$('copyBtn').addEventListener('click',async()=>{
+ try{await navigator.clipboard.writeText($('message').textContent);toast('Sample message copied. It has not been sent.');}
+ catch(e){const range=document.createRange();range.selectNodeContents($('message'));const sel=window.getSelection();sel.removeAllRanges();sel.addRange(range);toast('Select and copy the highlighted sample text.');}
+});
+$('resetBtn').addEventListener('click',()=>{acknowledged=false;$('statusBadge').textContent='AWAITING RESPONSE';$('statusBadge').className='statusbadge red';$('alertTitle').textContent='Possible vehicle accident detected';$('alertDesc').textContent='A simulated alert has been received. Please review the sample location and acknowledge this demo incident.';updateMessage();updateTimeline();toast('Demo status reset.');});
+updateMessage();
+</script>
+</body>
+</html>
